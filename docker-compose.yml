@@ -1,0 +1,16 @@
+name: hll-geofences-midcap
+
+services:
+  hll-geofences-midcap:
+    image: hll-geofences-goletloose:latest
+    container_name: hll-geofences-midcap
+    volumes:
+      - ./seeding.midcap.yml:/app/config.yml
+    restart: unless-stopped
+
+  hll-geofences-lastcap:
+    image: hll-geofences-goletloose:latest
+    container_name: hll-geofences-lastcap
+    volumes:
+      - ./seeding.lastcap.yml:/app/config.yml
+    restart: unless-stopped

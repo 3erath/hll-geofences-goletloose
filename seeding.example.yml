@@ -1,0 +1,19 @@
+Servers:
+  - Host: "YOUR_HLL_RCON_HOST"
+    Port: 12345
+    Password: "YOUR_RCON_PASSWORD"
+    PunishAfterSeconds: 10
+
+    Messages:
+      Warning: "You are outside of the designated play area! Please go back to the battlefield immediately.\n\nYou will be punished in %s"
+      Punish: "%s outside the play area"
+
+    AlliesFence:
+      - X: "E"
+        Y: 5
+        Numpad: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+    AxisFence:
+      - X: "F"
+        Y: 5
+        Numpad: [1, 2, 3, 4, 5, 6, 7, 8, 9]

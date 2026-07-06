@@ -1,0 +1,17 @@
+{
+  "name": "hll-geofences-discord-control",
+  "version": "1.0.0",
+  "description": "Discord control bot for HLL geofence Docker services.",
+  "type": "module",
+  "main": "seeding.main.mjs",
+  "scripts": {
+    "start": "node seeding.main.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "discord.js": "^14.18.0",
+    "dotenv": "^16.4.7"
+  }
+}
