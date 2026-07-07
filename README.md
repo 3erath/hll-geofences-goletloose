@@ -14,6 +14,13 @@ This version was created because the original worker returned player positions a
 - Works with Docker Compose
 - Includes a Discord button bot for starting and stopping Midcap/Lastcap containers
 
+## Current behavior
+
+- `Allies` players are checked against `AlliesFence`.
+- `Axis` players are checked against `AxisFence`.
+- Grid checks are strict. If a player crosses into a non-allowed grid cell, the worker warns them immediately and punishes them after the configured delay.
+- No extra safety margin is applied around grid borders by default.
+
 ## Important
 
 Do not commit live config files.

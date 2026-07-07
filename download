@@ -1,0 +1,29 @@
+# Secrets / live configs
+.env
+*.env
+config.yml
+seeding.midcap.yml
+seeding.lastcap.yml
+
+# Backups
+*.bak
+*.working
+*.before-*
+backup-old-geofence/
+
+# Debug / local
+debug-geofence.go
+
+# Node
+node_modules/
+
+# Go / vendor
+vendor/
+
+# Build outputs
+app
+*.exe
+
+# OS / editor
+.DS_Store
+*.swp
