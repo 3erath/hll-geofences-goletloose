@@ -10,7 +10,8 @@ This version was created because the original worker returned player positions a
 - Supports Allies and Axis geofences
 - Sends warning messages to players outside the allowed area
 - Punishes players after a configurable delay
-- Supports map, game mode and player count conditions
+- Supports map and game mode conditions
+- Ignores `player_count` conditions so the geofence can be controlled manually through the Discord buttons
 - Works with Docker Compose
 - Includes a Discord button bot for starting and stopping Midcap/Lastcap containers
 
@@ -20,6 +21,18 @@ This version was created because the original worker returned player positions a
 - `Axis` players are checked against `AxisFence`.
 - Grid checks are strict. If a player crosses into a non-allowed grid cell, the worker warns them immediately and punishes them after the configured delay.
 - No extra safety margin is applied around grid borders by default.
+- Player count conditions are intentionally ignored. Start and stop the geofence manually with the Discord buttons instead.
+
+## Manual control
+
+The geofence is controlled by starting or stopping the Docker containers:
+
+- Start Midcap = Midcap geofence active
+- Stop Midcap = Midcap geofence inactive
+- Start Lastcap = Lastcap geofence active
+- Stop Lastcap = Lastcap geofence inactive
+
+Do not start a geofence container during a live public match unless you really want the configured fence to apply immediately.
 
 ## Important
 
