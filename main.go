@@ -222,10 +222,6 @@ func applicableFences(fences []Fence, session hll.SessionInfo) []Fence {
 }
 
 func (c Condition) Matches(session hll.SessionInfo) bool {
-	if len(c.Equals) == 0 && len(c.LessThan) == 0 && len(c.GreaterThan) == 0 {
-		return true
-	}
-
 	for key, values := range c.Equals {
 		switch key {
 		case "map_name":
@@ -241,24 +237,17 @@ func (c Condition) Matches(session hll.SessionInfo) bool {
 		}
 	}
 
-	for key, value := range c.LessThan {
-		switch key {
-		case "player_count":
-			if session.PlayerCount >= value {
-				return false
-			}
-		default:
+	// Manual button control: player_count conditions are intentionally ignored.
+	// This keeps old configs compatible while preventing the worker from
+	// automatically disabling all fences once the server reaches a player limit.
+	for key := range c.LessThan {
+		if key != "player_count" {
 			return false
 		}
 	}
 
-	for key, value := range c.GreaterThan {
-		switch key {
-		case "player_count":
-			if session.PlayerCount <= value {
-				return false
-			}
-		default:
+	for key := range c.GreaterThan {
+		if key != "player_count" {
 			return false
 		}
 	}
