@@ -14,8 +14,9 @@ import (
 )
 
 const (
-	mapMin = -100000.0
-	cell   = 20000.0
+	mapMin             = -100000.0
+	cell               = 20000.0
+	spawnGraceDuration = 30 * time.Second
 )
 
 type Config struct {
@@ -102,8 +103,9 @@ func runServer(srv Server) {
 	defer rcn.Close()
 
 	outside := map[string]OutsidePlayer{}
+	spawnGraceUntil := map[string]time.Time{}
 
-	log.Printf("Geofence Worker gestartet für %s:%d | punish_after=%ds", srv.Host, srv.Port, punishAfter)
+	log.Printf("Geofence Worker gestartet für %s:%d | punish_after=%ds | spawn_grace=%s", srv.Host, srv.Port, punishAfter, spawnGraceDuration)
 
 	for {
 		session, err := rcn.GetSessionInfo()
@@ -123,8 +125,21 @@ func runServer(srv Server) {
 			continue
 		}
 
+		now := time.Now()
+
 		for _, p := range players {
 			if !p.IsSpawned() {
+				delete(outside, p.ID)
+				delete(spawnGraceUntil, p.ID)
+				continue
+			}
+
+			if until, ok := spawnGraceUntil[p.ID]; !ok {
+				spawnGraceUntil[p.ID] = now.Add(spawnGraceDuration)
+				delete(outside, p.ID)
+				log.Printf("player-spawn-grace player=%q id=%s until=%s", p.Name, p.ID, spawnGraceUntil[p.ID].Format(time.RFC3339))
+				continue
+			} else if now.Before(until) {
 				delete(outside, p.ID)
 				continue
 			}
@@ -158,7 +173,7 @@ func runServer(srv Server) {
 			if !alreadyOutside {
 				outside[p.ID] = OutsidePlayer{
 					Name:         p.Name,
-					FirstOutside: time.Now(),
+					FirstOutside: now,
 					LastGrid:     grid,
 				}
 
@@ -174,7 +189,7 @@ func runServer(srv Server) {
 			o.LastGrid = grid
 			outside[p.ID] = o
 
-			if time.Since(o.FirstOutside) >= time.Duration(punishAfter)*time.Second {
+			if now.Sub(o.FirstOutside) >= time.Duration(punishAfter)*time.Second {
 				reason := formatMessage(srv.PunishMessage(), fmt.Sprintf("%ds", punishAfter))
 				log.Printf("punish-player player=%q id=%s grid=%s", p.Name, p.ID, grid.String())
 
@@ -182,7 +197,9 @@ func runServer(srv Server) {
 					log.Printf("punish-player-error player=%q id=%s error=%v", p.Name, p.ID, err)
 				}
 
-				delete(outside, p.ID)
+				o.FirstOutside = now
+				o.LastGrid = grid
+				outside[p.ID] = o
 			}
 		}
 
