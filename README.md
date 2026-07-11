@@ -10,6 +10,7 @@ This version was created because the original worker returned player positions a
 - Supports Allies and Axis geofences
 - Sends warning messages to players outside the allowed area
 - Punishes players after a configurable delay
+- Adds a 30 second spawn grace period before checking newly spawned players
 - Supports map and game mode conditions
 - Ignores `player_count` conditions so the geofence can be controlled manually through the Discord buttons
 - Works with Docker Compose
@@ -19,7 +20,9 @@ This version was created because the original worker returned player positions a
 
 - `Allies` players are checked against `AlliesFence`.
 - `Axis` players are checked against `AxisFence`.
-- Grid checks are strict. If a player crosses into a non-allowed grid cell, the worker warns them immediately and punishes them after the configured delay.
+- Newly spawned players are ignored for 30 seconds before geofence checks begin.
+- Grid checks are strict. If a player crosses into a non-allowed grid cell after the spawn grace period, the worker warns them and punishes them after the configured delay.
+- After a punishment, the worker keeps the player marked as outside instead of immediately sending a new warning every second.
 - No extra safety margin is applied around grid borders by default.
 - Player count conditions are intentionally ignored. Start and stop the geofence manually with the Discord buttons instead.
 
