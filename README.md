@@ -10,7 +10,9 @@ This version was created because the original worker returned player positions a
 - Supports Allies and Axis geofences
 - Sends warning messages to players outside the allowed area
 - Punishes players after a configurable delay
-- Adds a 30 second spawn grace period before checking newly spawned players
+- Waits for real player movement before confirming a spawn
+- Adds a 30 second grace period after spawn confirmation
+- Resets stored state when a player is unspawned, reconnects or changes team
 - Supports map and game mode conditions
 - Ignores `player_count` conditions so the geofence can be controlled manually through the Discord buttons
 - Works with Docker Compose
@@ -20,8 +22,12 @@ This version was created because the original worker returned player positions a
 
 - `Allies` players are checked against `AlliesFence`.
 - `Axis` players are checked against `AxisFence`.
-- Newly spawned players are ignored for 30 seconds before geofence checks begin.
-- Grid checks are strict. If a player crosses into a non-allowed grid cell after the spawn grace period, the worker warns them and punishes them after the configured delay.
+- Players in the deployment screen are not checked.
+- A newly detected spawned player must first move at least 200 cm before the spawn is confirmed.
+- After spawn confirmation, the player receives a 30 second grace period before geofence checks begin.
+- Stored punish timers are cleared when the player is no longer spawned.
+- Team changes reset the previous fence state and require a fresh movement confirmation.
+- Grid checks are strict. If a player crosses into a non-allowed grid cell after the grace period, the worker warns them and punishes them after the configured delay.
 - After a punishment, the worker keeps the player marked as outside instead of immediately sending a new warning every second.
 - No extra safety margin is applied around grid borders by default.
 - Player count conditions are intentionally ignored. Start and stop the geofence manually with the Discord buttons instead.
