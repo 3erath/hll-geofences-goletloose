@@ -1,0 +1,6 @@
+.env
+node_modules/
+seeding.midcap.yml
+seeding.lastcap.yml
+config.yml
+.geofence-auto-state.json
